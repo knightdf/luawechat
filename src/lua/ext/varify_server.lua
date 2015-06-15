@@ -20,8 +20,12 @@ function WeChatTest:check_server(ngx)
         local t = {token, timestamp, nonce}
         table.sort(t)
         local s = ngx.sha1_bin(table.concat(t))
-        logger:debug('calculated signature: %s', tostring(s))
-        if s == signature then
+        local tmp_str = ''
+        for i=1, #s do
+            tmp_str = tmp_str .. string.format('%02x', string.byte(s:sub(i, i)))
+        end
+        logger:debug('calculated signature: %s', tostring(tmp_str))
+        if tmp_str == signature then
             ngx.say(echostr)
             ngx.exit(200)
         end
